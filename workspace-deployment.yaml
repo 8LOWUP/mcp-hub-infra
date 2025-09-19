@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: workspace-service
+  template:
+    metadata:
+      labels:
+        app: workspace-service
+    spec:
+      containers:
+        - name: workspace-service
+          image: asia-northeast3-docker.pkg.dev/mcp-market-472506/mcp-marcket-artifact-registry/workspace-service:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: workspace-mongo-secret
+            - secretRef:
+                name: redis-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workspace-service
+spec:
+  selector:
+    app: workspace-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP

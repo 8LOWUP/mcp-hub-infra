@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcp-service
+  template:
+    metadata:
+      labels:
+        app: mcp-service
+    spec:
+      containers:
+        - name: mcp-service
+          image: asia-northeast3-docker.pkg.dev/mcp-market-472506/mcp-marcket-artifact-registry/mcp-service:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: mcp-mysql-secret
+            - secretRef:
+                name: redis-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-service
+spec:
+  selector:
+    app: mcp-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
