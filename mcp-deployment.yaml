@@ -25,7 +25,6 @@ spec:
                 name: mcp-mysql-secret
             - secretRef:
                 name: redis-secret
-
 ---
 apiVersion: v1
 kind: Service
